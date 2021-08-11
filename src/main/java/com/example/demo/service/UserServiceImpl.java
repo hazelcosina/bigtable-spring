@@ -1,7 +1,5 @@
 package com.example.demo.service;
 
-import com.example.demo.model.User;
-import com.example.demo.model.UserPayload;
 import com.example.demo.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -13,18 +11,14 @@ import reactor.core.publisher.Mono;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
-    private final UserMapper userMapper;
 
     @Override
-    public Flux<User> getAll() {
+    public Flux<Object> getAll() {
         return userRepository.getAll();
     }
 
     @Override
-    public Mono<Void> save(UserPayload object) {
-        User user = userMapper.mapToUser(object);
-        return userRepository.save(user);
-    }
+    public Mono<Void> save(Object object) { return userRepository.save(object); }
 
     @Override
     public Mono<Void> deleteAll() {
