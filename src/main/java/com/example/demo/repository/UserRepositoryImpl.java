@@ -1,6 +1,6 @@
 package com.example.demo.repository;
 
-import com.example.demo.model.UserConstants;
+import com.example.demo.model.BigTableConstants;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -26,7 +26,7 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public Flux<Object> getAll() {
-        Query query = Query.create(UserConstants.TABLE_ID);
+        Query query = Query.create(BigTableConstants.TABLE_ID);
         ServerStream<Row> rowStream = dataClient.readRows(query);
 
         List<JsonNode> nodes = new ArrayList<>();
@@ -44,8 +44,8 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public Mono<Void> save(Object object) {
 
-        RowMutation.create(UserConstants.TABLE_ID, UserConstants.PREFIX );
-        RowMutation rowMutation = RowMutation.create(UserConstants.TABLE_ID, UserConstants.PREFIX + UUID.randomUUID().toString());
+        RowMutation.create(BigTableConstants.TABLE_ID, BigTableConstants.PREFIX );
+        RowMutation rowMutation = RowMutation.create(BigTableConstants.TABLE_ID, BigTableConstants.PREFIX + UUID.randomUUID().toString());
 
         JsonNode root = mapper.valueToTree(object);
         Iterator<Map.Entry<String, JsonNode>> rootFields = root.fields();
@@ -56,10 +56,10 @@ public class UserRepositoryImpl implements UserRepository {
                 Iterator<Map.Entry<String, JsonNode>> fields = rootEntry.getValue().fields();
                 while (fields.hasNext()) {
                     Map.Entry<String, JsonNode> entry = fields.next();
-                    rowMutation.setCell(UserConstants.COLUMN_FAMILY, entry.getKey(), entry.getValue().asText());
+                    rowMutation.setCell(BigTableConstants.COLUMN_FAMILY, entry.getKey(), entry.getValue().asText());
                 }
             } else {
-                rowMutation.setCell(UserConstants.COLUMN_FAMILY, rootEntry.getKey(), rootEntry.getValue().asText());
+                rowMutation.setCell(BigTableConstants.COLUMN_FAMILY, rootEntry.getKey(), rootEntry.getValue().asText());
             }
             dataClient.mutateRow(rowMutation);
         }
@@ -70,10 +70,10 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public Mono<Void> deleteAll() {
 
-        Query query = Query.create(UserConstants.TABLE_ID).prefix(UserConstants.PREFIX);
+        Query query = Query.create(BigTableConstants.TABLE_ID).prefix(BigTableConstants.PREFIX);
         ServerStream<Row> rows = dataClient.readRows(query);
         for (Row row : rows) {
-           dataClient.mutateRowAsync(RowMutation.create(UserConstants.TABLE_ID, row.getKey()).deleteRow());
+           dataClient.mutateRowAsync(RowMutation.create(BigTableConstants.TABLE_ID, row.getKey()).deleteRow());
         }
         return Mono.empty();
     }

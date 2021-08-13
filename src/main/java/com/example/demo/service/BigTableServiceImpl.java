@@ -8,7 +8,7 @@ import reactor.core.publisher.Mono;
 
 @Service
 @AllArgsConstructor
-public class UserServiceImpl implements UserService {
+public class BigTableServiceImpl implements BigTableService {
 
     private final UserRepository userRepository;
 
