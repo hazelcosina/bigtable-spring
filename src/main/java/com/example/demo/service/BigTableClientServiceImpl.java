@@ -9,13 +9,12 @@ import reactor.core.publisher.Mono;
 
 @Service
 @RequiredArgsConstructor
-public class BigTableClientImpl implements BigTableClientService {
+public class BigTableClientServiceImpl implements BigTableClientService {
 
     private final WebClient webClient;
 
     @Override
     public Flux<Object> getAll() {
-        System.out.println("sds");
          return webClient.get().uri("/api/applications").accept(MediaType.APPLICATION_JSON)
                 .retrieve()
                 .bodyToFlux(Object.class);

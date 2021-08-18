@@ -19,7 +19,7 @@ import java.util.*;
 
 @Repository
 @RequiredArgsConstructor
-public class UserRepositoryImpl implements UserRepository {
+public class BigTableRepositoryImpl implements BigTableRepository {
 
     private final BigtableDataClient dataClient;
     private final ObjectMapper mapper;
