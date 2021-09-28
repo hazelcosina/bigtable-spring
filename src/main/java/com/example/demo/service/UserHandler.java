@@ -19,7 +19,7 @@ public class UserHandler {
     }
 
     public Mono<ServerResponse> getUserById(ServerRequest request) {
-        Long id = Long.valueOf(request.pathVariable("id"));
+        int id = Integer.parseInt(request.pathVariable("id"));
         return ServerResponse.ok()
                 .body(userService.getUser(id), User.class);
     }

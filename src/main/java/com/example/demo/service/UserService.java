@@ -6,6 +6,6 @@ import reactor.core.publisher.Mono;
 
 public interface UserService {
     Flux<User> getAll();
-    Mono<User> getUser(long id);
+    Mono<User> getUser(int id);
     Mono<User> getUser(String firstName);
 }
