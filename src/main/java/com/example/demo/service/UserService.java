@@ -7,5 +7,7 @@ import reactor.core.publisher.Mono;
 public interface UserService {
     Flux<User> getAll();
     Mono<User> getUser(int id);
-    Mono<User> getUser(String firstName);
+    Mono<Void> save(Mono<User> user);
+    Mono<User> update(Mono<User> user);
+    Mono<Void> delete(int id);
 }
