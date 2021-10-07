@@ -1,31 +1,44 @@
 package com.example.demo.service;
 
+import com.example.demo.model.User;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
+import org.springframework.web.reactive.function.BodyInserters;
+import org.springframework.web.reactive.function.server.RequestPredicates;
 import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.RouterFunctions;
 import org.springframework.web.reactive.function.server.ServerResponse;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
+import java.net.URI;
+
+import static java.lang.Integer.parseInt;
+import static org.springframework.web.reactive.function.BodyInserters.fromObject;
+import static org.springframework.web.reactive.function.BodyInserters.fromValue;
 import static org.springframework.web.reactive.function.server.RequestPredicates.GET;
 import static org.springframework.web.reactive.function.server.RequestPredicates.POST;
 import static org.springframework.web.reactive.function.server.RequestPredicates.PUT;
 import static org.springframework.web.reactive.function.server.RequestPredicates.DELETE;
 import static org.springframework.web.reactive.function.server.RequestPredicates.accept;
+import static org.springframework.web.reactive.function.server.RouterFunctions.route;
+import static org.springframework.web.reactive.function.server.ServerResponse.created;
+import static org.springframework.web.reactive.function.server.ServerResponse.ok;
 
 @Configuration
 public class UserRouter {
 
     @Bean
-    public RouterFunction<ServerResponse> route(UserHandler userHandler) {
-
-        return RouterFunctions.route()
-                .route(GET("/user"), userHandler::getAll)
-                .route(GET("/user/{id}").and(accept(MediaType.APPLICATION_JSON)), userHandler::getUserById)
-                .route(POST("/user").and(accept(MediaType.APPLICATION_JSON)), userHandler::createUser)
-                .route(PUT("/user").and(accept(MediaType.APPLICATION_JSON)), userHandler::delete)
-                .route(DELETE("/user/{id}").and(accept(MediaType.APPLICATION_JSON)), userHandler::delete)
-                .build();
+    public RouterFunction<ServerResponse> userRoutes(UserService userService) {
+        return route().nest(RequestPredicates.path("/user"),
+                builder -> {
+                    builder.GET("/{id}", req -> ok().body(userService.getUser(parseInt(req.pathVariable("id"))), User.class));
+                    builder.DELETE("/{id}", req -> ok().body(userService.delete(parseInt(req.pathVariable("id"))), User.class));
+                    builder.GET(req -> ok().body(userService.getAll(), User.class));
+                    builder.POST(req -> created(URI.create("/")).body(userService.save(req.bodyToMono(User.class)), User.class));
+                    builder.PUT(req -> ok().body(userService.update(req.bodyToMono(User.class)), User.class));
+                }).build();
     }
-
 }
