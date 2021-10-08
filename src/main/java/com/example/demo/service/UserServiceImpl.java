@@ -55,5 +55,14 @@ public class UserServiceImpl implements UserService {
                 .bodyToMono(Void.class);
     }
 
+    @Override
+    public Mono<Object> getCredit(int id) {
+        return webClient
+                .get()
+                .uri("/enquiry/report/" + id)
+                .retrieve()
+                .bodyToMono(Object.class);
+    }
+
 
 }

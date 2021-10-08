@@ -16,13 +16,6 @@ import reactor.core.publisher.Mono;
 import java.net.URI;
 
 import static java.lang.Integer.parseInt;
-import static org.springframework.web.reactive.function.BodyInserters.fromObject;
-import static org.springframework.web.reactive.function.BodyInserters.fromValue;
-import static org.springframework.web.reactive.function.server.RequestPredicates.GET;
-import static org.springframework.web.reactive.function.server.RequestPredicates.POST;
-import static org.springframework.web.reactive.function.server.RequestPredicates.PUT;
-import static org.springframework.web.reactive.function.server.RequestPredicates.DELETE;
-import static org.springframework.web.reactive.function.server.RequestPredicates.accept;
 import static org.springframework.web.reactive.function.server.RouterFunctions.route;
 import static org.springframework.web.reactive.function.server.ServerResponse.created;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
@@ -34,6 +27,7 @@ public class UserRouter {
     public RouterFunction<ServerResponse> userRoutes(UserService userService) {
         return route().nest(RequestPredicates.path("/user"),
                 builder -> {
+                    builder.GET("/credit-enquiry/{id}", req -> ok().body(userService.getCredit(parseInt(req.pathVariable("id"))), Object.class));
                     builder.GET("/{id}", req -> ok().body(userService.getUser(parseInt(req.pathVariable("id"))), User.class));
                     builder.DELETE("/{id}", req -> ok().body(userService.delete(parseInt(req.pathVariable("id"))), User.class));
                     builder.GET(req -> ok().body(userService.getAll(), User.class));

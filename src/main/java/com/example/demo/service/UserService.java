@@ -10,4 +10,5 @@ public interface UserService {
     Mono<Void> save(Mono<User> user);
     Mono<User> update(Mono<User> user);
     Mono<Void> delete(int id);
+    Mono<Object> getCredit(int id);
 }

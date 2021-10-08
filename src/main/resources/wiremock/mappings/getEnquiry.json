@@ -1,0 +1,15 @@
+{
+  "id": "32b42df3-4281-37e3-a235-959a75e00997",
+  "request": {
+    "urlPathPattern": "/enquiry/report/([1-9])",
+    "method": "GET"
+  },
+  "response": {
+    "status": 200,
+    "bodyFileName": "enquiry.json",
+    "headers": {
+      "Content-Type": "application/json"
+    }
+
+  }
+}
