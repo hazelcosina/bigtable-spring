@@ -1,11 +1,14 @@
 package com.example.demo.service;
 
 import com.example.demo.config.TWebClient;
+import com.example.demo.config.WiremockConfiguration;
 import com.example.demo.model.User;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
@@ -17,12 +20,16 @@ import static com.github.tomakehurst.wiremock.client.WireMock.*;
 
 @ExtendWith(SpringExtension.class)
 @WebFluxTest
-@ContextConfiguration(classes = {UserRouter.class, UserHandler.class, UserServiceImpl.class, TWebClient.class})
-@AutoConfigureWireMock
+@ContextConfiguration(classes = {UserRouter.class, UserServiceImpl.class, TWebClient.class, WiremockConfiguration.class})
+@AutoConfigureWireMock(port=0)
 class UserRouterTest {
+
 
     @Autowired
     private WebTestClient webTestClient;
+
+    @Autowired
+    private WiremockConfiguration wiremockConfiguration;
 
     @Test
     void getAll() {
@@ -76,10 +83,10 @@ class UserRouterTest {
     void save() {
 
         stubFor(post(("/user/save"))
-                .withRequestBody( matchingJsonPath("$.id"))
-                .withRequestBody( matchingJsonPath("$.firstName"))
-                .withRequestBody( matchingJsonPath("$.lastName"))
-                .withRequestBody( matchingJsonPath("$.age"))
+                .withRequestBody(matchingJsonPath("$.id"))
+                .withRequestBody(matchingJsonPath("$.firstName"))
+                .withRequestBody(matchingJsonPath("$.lastName"))
+                .withRequestBody(matchingJsonPath("$.age"))
                 .willReturn(aResponse()
                         .withStatus(201)
                         .withHeader("Content-Type", "application/json")
