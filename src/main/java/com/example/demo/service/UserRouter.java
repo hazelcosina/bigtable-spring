@@ -1,5 +1,7 @@
 package com.example.demo.service;
 
+import com.example.demo.config.RequestValidator;
+//import com.example.demo.config.ValidatorHandler;
 import com.example.demo.model.User;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -8,6 +10,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springdoc.core.annotations.RouterOperation;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
@@ -36,14 +39,16 @@ public class UserRouter {
             @ApiResponse(responseCode = "404", description = "Employee not found")}, parameters = {
             @Parameter(in = ParameterIn.PATH, name = "id")}
     ))
-    public RouterFunction<ServerResponse> userRoutes(UserService userService) {
+    public RouterFunction<ServerResponse> userRoutes(UserService userService, RequestValidator validator) {
         return route().nest(RequestPredicates.path("/user"),
                 builder -> {
                     builder.GET("/credit-enquiry/{id}", req -> ok().body(userService.getCredit(parseInt(req.pathVariable("id"))), Object.class));
                     builder.GET("/{id}", req -> ok().body(userService.getUser(parseInt(req.pathVariable("id"))), User.class));
                     builder.DELETE("/{id}", req -> ok().body(userService.delete(parseInt(req.pathVariable("id"))), User.class));
                     builder.GET(req -> ok().body(userService.getAll(), User.class));
-                    builder.POST(req -> created(URI.create("/")).body(userService.save(req.bodyToMono(User.class)), User.class));
+//                    builder.POST(req -> created(URI.create("/")).body(userService.save(req.bodyToMono(User.class)), User.class));
+//                    builder.POST(req -> created(URI.create("/")).body(userService.save(req.bodyToMono(User.class).flatMap(validator::validate)), User.class));
+                    builder.POST(req -> created(URI.create("/")).body(userService.createObj(req.bodyToMono(Object.class).flatMap(validator::validate)), Object.class));
                     builder.PUT(req -> ok().body(userService.update(req.bodyToMono(User.class)), User.class));
                 }).build();
     }

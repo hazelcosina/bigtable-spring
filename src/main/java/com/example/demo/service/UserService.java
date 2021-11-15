@@ -11,4 +11,7 @@ public interface UserService {
     Mono<User> update(Mono<User> user);
     Mono<Void> delete(int id);
     Mono<Object> getCredit(int id);
+
+    Mono<Void> createObj(Object obj);
+
 }

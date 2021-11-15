@@ -64,5 +64,16 @@ public class UserServiceImpl implements UserService {
                 .bodyToMono(Object.class);
     }
 
+    @Override
+    public Mono<Void> createObj(Object obj) {
+        System.out.println("yay");
+        return webClient
+                .post()
+                .uri("/user/save")
+                .body(obj, Object.class)
+                .retrieve()
+                .bodyToMono(Void.class);
+    }
+
 
 }
